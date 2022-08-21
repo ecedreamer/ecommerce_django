@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 mx-auto">
+            <h5> Your payment for the order #{{ord.id}} is successful.</h5>
+            <p>Thanks for your order {{customer.name}}!</p>
+            <p> <a href="{% url 'ecomapp:customerorderdetail' ord.id %}">Visit your order</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script>
+
+</script>
+{% endblock %}

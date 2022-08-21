@@ -6,11 +6,13 @@ from django.core.paginator import Paginator
 from .utils import password_reset_token
 from django.core.mail import send_mail
 from django.http import JsonResponse
+from django.contrib import messages
 from django.conf import settings
 from django.db.models import Q
 from .models import *
 from .forms import *
 import requests
+import stripe
 
 
 class EcomMixin(object):
@@ -33,7 +35,6 @@ class HomeView(EcomMixin, TemplateView):
         all_products = Product.objects.all().order_by("-id")
         paginator = Paginator(all_products, 8)
         page_number = self.request.GET.get('page')
-        print(page_number)
         product_list = paginator.get_page(page_number)
         context['product_list'] = product_list
         return context
@@ -198,6 +199,8 @@ class CheckoutView(EcomMixin, CreateView):
                 return redirect(reverse("ecomapp:khaltirequest") + "?o_id=" + str(order.id))
             elif pm == "Esewa":
                 return redirect(reverse("ecomapp:esewarequest") + "?o_id=" + str(order.id))
+            elif pm == "Stripe":
+                return redirect(reverse("ecomapp:striperequest") + "?o_id=" + str(order.id))
         else:
             return redirect("ecomapp:home")
         return super().form_valid(form)
@@ -282,6 +285,78 @@ class EsewaVerifyView(View):
         else:
 
             return redirect("/esewa-request/?o_id="+order_id)
+
+
+STRIPE_SECRET_KEY = "PUT_YOUR_STRIPE_SECRET_KEY_HERE"
+
+
+class StripeRequestView(View):
+    def get(self, request, *args, **kwargs):
+        stripe.api_key = STRIPE_SECRET_KEY
+        o_id = request.GET.get("o_id")
+        order = Order.objects.get(id=o_id)
+        items = [
+            {
+                "price_data": {
+                    "currency": 'usd', 
+                    "product_data": {
+                        "name": item.product.title
+                    },
+                    "unit_amount": item.product.selling_price
+                }, 
+                "quantity": item.quantity
+            } for item in order.cart.cartproduct_set.all()
+        ]
+
+        session = stripe.checkout.Session.create(
+            line_items=items, mode='payment',
+            success_url=f"{request.scheme}://{request.get_host()}/stripe-verify/?o_id={o_id}&session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{request.scheme}://{request.get_host()}/stripe-failure/?o_id={o_id}")
+
+        return redirect(session.url, code=303)
+
+
+class StripeVerifyView(View):
+    template_name = "stripesuccess.html"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            stripe.api_key = STRIPE_SECRET_KEY
+            session = stripe.checkout.Session.retrieve(
+                request.GET.get('session_id'))
+            customer = stripe.Customer.retrieve(session.customer)
+            o_id = request.GET.get("o_id")
+            order = Order.objects.get(id=o_id)
+            order.payment_completed = True
+            order.save()
+            context = {
+                "ord": order,
+                "customer": customer,
+            }
+            return render(request, self.template_name, context)
+        except Exception as e:
+            print(e)
+            messages.error(
+                request, 'Payment using stripe failed. But your order has been placed')
+            return redirect(reverse("ecommapp:stripefailure"),)
+
+
+class StripeFailureView(View):
+    template_name = "stripefailure.html"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            o_id = request.GET.get("o_id")
+            order = Order.objects.get(id=o_id)
+            context = {
+                "ord": order,
+            }
+            return render(request, self.template_name, context)
+        except Exception as e:
+            print(e)
+            messages.error(
+                request, 'Payment using stripe failed. But your order has been placed')
+            return redirect("/")
 
 
 class CustomerRegistrationView(CreateView):
@@ -394,7 +469,7 @@ class CustomerOrderCancelView(View):
             context = {
                 "order": order
             }
-            return  render(request, "customerordercancel.html", context)
+            return render(request, "customerordercancel.html", context)
         except Exception as e:
             print(e)
             return redirect("ecomapp:customerprofile")

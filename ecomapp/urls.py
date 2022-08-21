@@ -25,6 +25,10 @@ urlpatterns = [
     path("esewa-request/", EsewaRequestView.as_view(), name="esewarequest"),
     path("esewa-verify/", EsewaVerifyView.as_view(), name="esewaverify"),
 
+    path("stripe-request/", StripeRequestView.as_view(), name="striperequest"),
+    path("stripe-verify/", StripeVerifyView.as_view(), name="stripeverify"),
+    path("stripe-failure/", StripeFailureView.as_view(), name="stripefailure"),
+
     path("register/",
          CustomerRegistrationView.as_view(), name="customerregistration"),
 

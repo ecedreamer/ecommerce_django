@@ -49,7 +49,15 @@
         </nav>
     <hr>
 
-   
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% else %}{% endif %}" role="alert">
+            {{message}}
+        </div>
+        {% endfor %}
+    </ul>
+    {% endif %}
     {% block content %}
     {% endblock %}
 
