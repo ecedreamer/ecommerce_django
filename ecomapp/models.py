@@ -62,7 +62,7 @@ class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return "Cart: " + str(self.id)
+        return f"Cart: {str(self.id)}"
 
 
 class CartProduct(models.Model):
@@ -73,7 +73,7 @@ class CartProduct(models.Model):
     subtotal = models.PositiveIntegerField()
 
     def __str__(self):
-        return "Cart: " + str(self.cart.id) + " CartProduct: " + str(self.id)
+        return f"Cart: {str(self.cart.id)} CartProduct: {str(self.id)}"
 
 
 ORDER_STATUS = (
@@ -109,4 +109,4 @@ class Order(models.Model):
         default=False, null=True, blank=True)
 
     def __str__(self):
-        return "Order: " + str(self.id)
+        return f"Order: {str(self.id)}"
