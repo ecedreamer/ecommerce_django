@@ -287,7 +287,7 @@ class EsewaVerifyView(View):
             return redirect("/esewa-request/?o_id="+order_id)
 
 # for more security, store your API key in database or in environment file. 
-STRIPE_SECRET_KEY = "sk_test_51G3aBDEttHihmm2IOBPw9sqj4mdcIftNVnsFsosAT5WkFSy3eFtEVIR6xbYbR9VxT9cIJ60sm256yl5CuItxLMMV00PqDExrW0"
+STRIPE_SECRET_KEY = "sk_test_51LQXhFItMbzTFRwNFstoGvw3cAKWi1YBdT3rP2hPZY7cNREjewhxhnhUIc3gVIe7mf8LNqTn91FMKym71jVtLkPE00UrshMhDF"
 
 
 class StripeRequestView(View):
