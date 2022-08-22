@@ -1,37 +1,37 @@
-
-**Youtube Tutorial of this Ecommerce website tutorial**
-
-https://www.youtube.com/playlist?list=PLPugx1RzUWEVOyqPf3N2EnadRppyi4Cpy
-
-To run this project in your computer, follow the steps below
--------------------------------------------------------------
-Step 1. Make and activate virtual Environment in your computer
-    In windows
-    > virtualenv ecom
-    > Scripts\activate
-    In mac and linux
-    $ virtualenv ecom
-    $ source bin/activate
-
-Step 2. Clone the project
-    $ git clone https://gitlab.com/ecedreamer/ecomtuts.git
-    $ cd ecomtuts
-    if you donot have git in your computer, install it before and clone it again.
-
-Step 3: Install dependencies 
-    $ pip install -r requirements.txt
-    or 
-    $ pip install django pillow requests six
-
-Step 4: Apply the migration if any
-    $ python manage.py migrate
+### Cloning and Running this Project ###
 
 
-Step 5: You can now open project folder in your editor
 
-Step 6: Run Development server
-    $ python manage.py runserver
+1. Make a Virtualenv and Activate your virtual environment
+```
+$ python3 -m virtualenv venv
 
+$ cd venv
 
-Now you can modify the code and data
-Make better design to make your project more stunning. 
+$ source bin/activate 
+```
+
+2. Clone the repo
+```
+$ git clone https://gitlab.com/ecedreamer/ecommerce-with-stripe.git
+
+$ cd ecommerce-with-stripe
+```
+
+3. Install the requirements
+```
+$ pip install -r requirements.txt 
+```
+
+4. Run the development server
+```
+$ python manage.py runserver
+```
+
+5. Then open the running project from your browser. or click below
+    
+    [Ecommerce site](http://127.0.0.1:8000) 
+
+6. Add items to the cart, go to carts and checkout with stripe. 
+
+Enjoy 
