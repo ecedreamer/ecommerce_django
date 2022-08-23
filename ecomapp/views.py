@@ -201,6 +201,8 @@ class CheckoutView(EcomMixin, CreateView):
                 return redirect(reverse("ecomapp:esewarequest") + "?o_id=" + str(order.id))
             elif pm == "Stripe":
                 return redirect(reverse("ecomapp:striperequest") + "?o_id=" + str(order.id))
+            elif pm == "Cash On Delivery":
+                return redirect("ecomapp:customerorderdetail", order.id)
         else:
             return redirect("ecomapp:home")
         return super().form_valid(form)

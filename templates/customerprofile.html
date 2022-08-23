@@ -34,7 +34,7 @@
                         <td><a href="{% url 'ecomapp:customerorderdetail' ord.pk %}"> #ORDER_{{ord.id}}</a></td>
                         <td>{{ord.total}}</td>
                         <td>{{ord.created_at|timesince}} ago</td>
-                        <td>{{ord.payment_method}}| {% if ord.payment_completed %}Successful{% else %}Failed{% endif %}</td>
+                        <td>{{ord.payment_method}}{% if ord.payment_completed %} | Successful{% elif ord_obj.payment_method == "Cash On DELIVERY" %}Failed{% endif %}</td>
                         <td>{{ord.order_status}}</td>
                     </tr>
                     {% endfor %}
